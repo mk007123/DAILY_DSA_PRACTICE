@@ -1,0 +1,59 @@
+class Solution {
+public:
+
+    // Function to return the index of the target if it exists.
+    // If the target does not exist, return the index where it
+    // should be inserted to keep the array sorted.
+    int searchInsert(vector<int>& arr, int target) {
+
+        // Store the size of the array
+        int n = arr.size();
+
+        // 'start' points to the beginning of the current search range
+        int start = 0;
+
+        // 'end' points to the last index of the current search range
+        int end = n - 1;
+
+        // Assume the insertion position is at the end of the array.
+        // If every element is smaller than the target,
+        // the target should be inserted at index n.
+        int ans = n;
+
+        // Continue searching while the search range is valid
+        while (start <= end) {
+
+            // Find the middle index of the current search range
+            int mid = (start + end) / 2;
+
+            // Store the middle element for easier comparison
+            int ele = arr[mid];
+
+            // If the middle element is exactly equal to the target,
+            // return its index immediately.
+            if (ele == target) {
+                return mid;
+            }
+
+            // If the middle element is smaller than the target,
+            // then the target (or its insertion position)
+            // must be in the right half.
+            else if (ele < target) {
+                start = mid + 1;
+            }
+
+            // Otherwise, ele > target.
+            // This index can be a possible insertion position.
+            // Store it and continue searching in the left half
+            // to find an even smaller valid position.
+            else {
+                ans = mid;
+                end = mid - 1;
+            }
+        }
+
+        // If the target was not found,
+        // return the correct insertion index.
+        return ans;
+    }
+};
