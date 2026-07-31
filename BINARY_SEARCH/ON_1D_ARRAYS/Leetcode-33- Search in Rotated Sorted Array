@@ -1,0 +1,76 @@
+class Solution {
+public:
+
+    // Function to search for the target in a rotated sorted array.
+    // Returns the index of the target if found, otherwise returns -1.
+    int search(vector<int>& arr, int target) {
+
+        // Store the size of the array
+        int n = arr.size();
+
+        // 'start' points to the beginning of the current search range
+        int start = 0;
+
+        // 'end' points to the last index of the current search range
+        int end = n - 1;
+
+        // Store the first element of the array.
+        // It is used to determine whether the middle element
+        // belongs to the left sorted portion or the right sorted portion.
+        int s1 = arr[0];
+
+        // Store the last element of the array.
+        // (Not used in this solution, but declared.)
+        int e2 = arr[n - 1];
+
+        // Continue searching while the search range is valid
+        while (start <= end) {
+
+            // Find the middle index of the current search range
+            int mid = (start + end) / 2;
+
+            // If the middle element is the target,
+            // return its index immediately.
+            if (arr[mid] == target) {
+                return mid;
+            }
+
+            // Check whether the middle element lies in
+            // the left sorted portion of the rotated array.
+            if (arr[mid] >= s1) {
+
+                // If the target also belongs to the left sorted portion
+                // and is smaller than the middle element,
+                // search in the left half.
+                if (target >= s1 && target < arr[mid]) {
+                    end = mid - 1;
+                }
+
+                // Otherwise, search in the right half.
+                else {
+                    start = mid + 1;
+                }
+            }
+
+            // Otherwise, the middle element lies in
+            // the right sorted portion.
+            else {
+
+                // If the target also belongs to the right sorted portion
+                // and is greater than the middle element,
+                // search in the right half.
+                if (target > arr[mid] && target < s1) {
+                    start = mid + 1;
+                }
+
+                // Otherwise, search in the left half.
+                else {
+                    end = mid - 1;
+                }
+            }
+        }
+
+        // If the loop ends, the target is not present in the array.
+        return -1;
+    }
+};
