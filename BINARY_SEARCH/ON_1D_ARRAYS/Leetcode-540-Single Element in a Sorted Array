@@ -1,0 +1,96 @@
+class Solution {
+public:
+
+    // Function to find the single element in a sorted array
+    // where every other element appears exactly twice.
+    int singleNonDuplicate(vector<int>& arr) {
+
+        // Store the size of the array
+        int n = arr.size();
+
+        // If the array contains only one element,
+        // that element is the answer.
+        if (n == 1) {
+            return arr[0];
+        }
+
+        // If the first element is different from the second,
+        // then the first element is the unique element.
+        if (arr[0] != arr[1]) {
+            return arr[0];
+        }
+
+        // If the last element is different from the second last,
+        // then the last element is the unique element.
+        if (arr[n - 1] != arr[n - 2]) {
+            return arr[n - 1];
+        }
+
+        // Ignore the first and last elements since
+        // they have already been checked.
+        int start = 1;
+        int end = n - 2;
+
+        // Continue searching while the search range is valid.
+        while (start <= end) {
+
+            // Find the middle index of the current search range
+            int mid = (start + end) / 2;
+
+            // Store the left neighbor of the middle element
+            int left = arr[mid - 1];
+
+            // Store the right neighbor of the middle element
+            int right = arr[mid + 1];
+
+            // If the middle element is different from both neighbors,
+            // then it is the single non-duplicate element.
+            if (arr[mid] != left && arr[mid] != right) {
+                return arr[mid];
+            }
+
+            // Check whether the middle index is odd.
+            if (mid % 2) {
+
+                // ---------- Odd Index ----------
+
+                // If the middle element matches the left neighbor,
+                // then all elements before and including this pair
+                // are correctly paired.
+                // So the single element must be in the right half.
+                if (arr[mid] == left) {
+                    start = mid + 1;
+                }
+
+                // Otherwise, the pair starts at the odd index,
+                // meaning the unique element lies in the left half.
+                else if (arr[mid] == right) {
+                    end = mid - 1;
+                }
+            }
+
+            // Otherwise, the middle index is even.
+            else {
+
+                // ---------- Even Index ----------
+
+                // If the middle element matches the left neighbor,
+                // then pairing has shifted,
+                // so the unique element lies in the left half.
+                if (arr[mid] == left) {
+                    end = mid - 1;
+                }
+
+                // If the middle element matches the right neighbor,
+                // then pairing is still correct,
+                // so search in the right half.
+                else if (arr[mid] == right) {
+                    start = mid + 1;
+                }
+            }
+        }
+
+        // This line should never be reached for valid input.
+        return -1;
+    }
+};
