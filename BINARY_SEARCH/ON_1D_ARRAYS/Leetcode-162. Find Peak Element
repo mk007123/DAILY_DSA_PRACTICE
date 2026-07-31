@@ -1,0 +1,78 @@
+class Solution {
+public:
+
+    // Function to find any peak element in the array.
+    // A peak element is an element that is strictly greater
+    // than its adjacent elements.
+    // The function returns the index of any one peak element.
+    int findPeakElement(vector<int>& arr) {
+
+        // Store the size of the array
+        int n = arr.size();
+
+        // 'start' points to the beginning of the current search range
+        int start = 0;
+
+        // 'end' points to the last index of the current search range
+        int end = n - 1;
+
+        // Continue searching while the search range is valid.
+        while (start <= end) {
+
+            // Find the middle index of the current search range
+            int mid = (start + end) / 2;
+
+            // Assume the left neighbor is negative infinity.
+            // This handles the boundary case when mid == 0.
+            long long left = -1e18;
+
+            // Assume the right neighbor is negative infinity.
+            // This handles the boundary case when mid == n-1.
+            long long right = -1e18;
+
+            // If a left neighbor exists,
+            // store its value.
+            if (mid >= 1) {
+                left = arr[mid - 1];
+            }
+
+            // If a right neighbor exists,
+            // store its value.
+            if (mid <= n - 2) {
+                right = arr[mid + 1];
+            }
+
+            // If the middle element is greater than both neighbors,
+            // then it is a peak element.
+            if (arr[mid] > left && arr[mid] > right) {
+                return mid;
+            }
+
+            // If the array is increasing at mid
+            // (left < mid < right),
+            // then a peak must exist on the right side.
+            else if (arr[mid] > left && arr[mid] < right) {
+                start = mid + 1;
+            }
+
+            // If the array is decreasing at mid
+            // (left > mid > right),
+            // then a peak must exist on the left side.
+            else if (arr[mid] < left && arr[mid] > right) {
+                end = mid - 1;
+            }
+
+            // If left > mid < right,
+            // mid is a valley.
+            // A peak exists on both sides.
+            // This code chooses to search the left half.
+            else {
+                end = mid - 1;
+            }
+        }
+
+        // This line should never be reached for valid input,
+        // because every array has at least one peak.
+        return 0;
+    }
+};
