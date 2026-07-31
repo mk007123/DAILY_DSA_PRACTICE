@@ -1,0 +1,55 @@
+class Solution {
+public:
+
+    // Function to find the minimum element in a rotated sorted array.
+    int findMin(vector<int>& arr) {
+
+        // Store the size of the array
+        int n = arr.size();
+
+        // 'start' points to the beginning of the current search range
+        int start = 0;
+
+        // 'end' points to the last index of the current search range
+        int end = n - 1;
+
+        // Store the first element of the array.
+        // It is used as a reference to determine whether
+        // the middle element belongs to the left sorted portion.
+        int s1 = arr[0];
+
+        // Store the last element of the array.
+        // (Not used in this solution, but declared.)
+        int e2 = arr[n - 1];
+
+        // Initially assume the first element is the minimum.
+        // If a smaller element is found later, update 'ans'.
+        int ans = s1;
+
+        // Continue searching while the search range is valid.
+        while (start <= end) {
+
+            // Find the middle index of the current search range
+            int mid = (start + end) / 2;
+
+            // If the middle element is greater than or equal to
+            // the first element, then it belongs to the left sorted portion.
+            // The minimum cannot be at 'mid', so search in the right half.
+            if (arr[mid] >= s1) {
+                start = mid + 1;
+            }
+
+            // Otherwise, the middle element belongs to the right sorted portion.
+            // It is a possible minimum.
+            // Store it if it is smaller than the current answer,
+            // then continue searching on the left to find an even smaller element.
+            else {
+                ans = min(ans, arr[mid]);
+                end = mid - 1;
+            }
+        }
+
+        // Return the minimum element in the rotated sorted array.
+        return ans;
+    }
+};
