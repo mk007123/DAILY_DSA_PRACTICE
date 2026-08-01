@@ -1,0 +1,117 @@
+class Solution {
+public:
+
+    // This function checks whether it is possible to make
+    // 'total_boq' bouquets on 'curr_day'.
+    bool f(vector<int>& arr, int total_boq, int k, int curr_day) {
+
+        // Total number of flowers
+        int n = arr.size();
+
+        // Store the original value of k.
+        // After making one bouquet or encountering an unbloomed flower,
+        // we reset k back to this value.
+        int temp = k;
+
+        // Traverse every flower
+        for (int i = 0; i < n; i++) {
+
+            // Bloom day of the current flower
+            int bloom_day = arr[i];
+
+            // If this flower has not bloomed yet,
+            // it breaks the consecutive sequence.
+            if (bloom_day > curr_day) {
+
+                // Reset the required consecutive flower count.
+                k = temp;
+            }
+
+            // Current flower has already bloomed.
+            else if (bloom_day <= curr_day) {
+
+                // Use this flower in the current bouquet.
+                k--;
+
+                // If k becomes 0,
+                // we have collected enough consecutive flowers
+                // to make one bouquet.
+                if (!k) {
+
+                    // One bouquet is completed.
+                    total_boq--;
+
+                    // If all required bouquets are made,
+                    // return true immediately.
+                    if (!total_boq) {
+                        return true;
+                    }
+
+                    // Start collecting flowers
+                    // for the next bouquet.
+                    k = temp;
+                }
+            }
+        }
+
+        // Not enough bouquets could be made.
+        return false;
+    }
+
+    int minDays(vector<int>& arr, int total_boq, int k) {
+
+        // Total number of flowers
+        int n = arr.size();
+
+        // If total flowers are less than
+        // bouquets × flowers needed per bouquet,
+        // making the bouquets is impossible.
+        if (n < 1LL * total_boq * k) {
+            return -1;
+        }
+
+        // Stores the minimum valid day found so far.
+        int ans = 0;
+
+        // Minimum possible answer.
+        // Bloom days are positive, so start from day 1.
+        int start = 1;
+
+        // Maximum possible answer.
+        // After the largest bloom day, every flower has bloomed.
+        int end = *max_element(arr.begin(), arr.end());
+
+        // Binary Search on the answer (day)
+        while (start <= end) {
+
+            // Find the middle day.
+            int mid = (start + end) / 2;
+
+            // Current day being checked.
+            int curr_day = mid;
+
+            // Check whether it is possible
+            // to make all bouquets on this day.
+            bool flag = f(arr, total_boq, k, curr_day);
+
+            // If possible
+            if (flag) {
+
+                // Store this as a possible answer.
+                ans = mid;
+
+                // Try to find an even smaller day.
+                end = mid - 1;
+            }
+            else {
+
+                // Current day is too early.
+                // Search on later days.
+                start = mid + 1;
+            }
+        }
+
+        // Return the minimum day required.
+        return ans;
+    }
+};
