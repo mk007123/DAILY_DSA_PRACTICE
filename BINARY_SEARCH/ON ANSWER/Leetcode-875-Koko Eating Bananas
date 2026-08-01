@@ -1,0 +1,96 @@
+class Solution {
+public:
+
+    // This function checks whether Koko can finish all the bananas
+    // at the given eating speed (curr_speed) within max_hours.
+    bool f(vector<int>& arr, long long curr_speed, int max_hours) {
+
+        // Total number of banana piles
+        int n = arr.size();
+
+        // Stores the total hours required to eat all piles
+        long long total_hours = 0;
+
+        // Visit every banana pile
+        for (int i = 0; i < n; i++) {
+
+            // Number of bananas in the current pile
+            int ele = arr[i];
+
+            // Add the complete hours required.
+            // Example:
+            // ele = 9, speed = 3
+            // 9 / 3 = 3 hours
+            total_hours = total_hours + (ele / curr_speed);
+
+            // If some bananas are left after division,
+            // one extra hour is needed.
+            //
+            // Example:
+            // ele = 10, speed = 3
+            // 10 / 3 = 3
+            // remainder = 1
+            // Total hours = 4
+            if (ele % curr_speed) {
+                total_hours++;
+            }
+        }
+
+        // Return true if all bananas can be eaten
+        // within the allowed hours.
+        return total_hours <= max_hours;
+    }
+
+    int minEatingSpeed(vector<int>& arr, int max_hours) {
+
+        // Total number of banana piles
+        int n = arr.size();
+
+        // Minimum possible eating speed.
+        // Koko must eat at least 1 banana per hour.
+        long long start = 1;
+
+        // Maximum possible eating speed.
+        // Eating faster than the largest pile gives no benefit,
+        // because a pile can only be finished in one hour.
+        long long end = *max_element(arr.begin(), arr.end());
+
+        // Stores the minimum valid eating speed found so far.
+        int ans = 0;
+
+        // Binary Search on the answer (eating speed)
+        while (start <= end) {
+
+            // Find the middle speed safely
+            // (avoids integer overflow).
+            int mid = start + (end - start) / 2;
+
+            // Current eating speed being tested
+            long long curr_speed = mid;
+
+            // Check whether this speed is enough
+            // to finish within max_hours.
+            bool flag = f(arr, curr_speed, max_hours);
+
+            // If this speed works
+            if (flag) {
+
+                // Store it as a possible answer
+                ans = mid;
+
+                // Try to find an even smaller valid speed
+                // by searching the left half.
+                end = mid - 1;
+            }
+            else {
+
+                // Current speed is too slow.
+                // Search in the right half for a faster speed.
+                start = mid + 1;
+            }
+        }
+
+        // Return the minimum speed found.
+        return ans;
+    }
+};
