@@ -1,0 +1,108 @@
+class Solution {
+public:
+
+    // This function checks whether the current divisor
+    // keeps the total sum less than or equal to the threshold.
+    bool f(vector<int>& arr, int th, int div) {
+
+        // Total number of elements
+        int n = arr.size();
+
+        // Stores the sum after dividing every element
+        int sum = 0;
+
+        // Traverse every element
+        for (int i = 0; i < n; i++) {
+
+            // Current element
+            int ele = arr[i];
+
+            // Add the quotient obtained after division.
+            // Example:
+            // ele = 8, div = 2
+            // 8 / 2 = 4
+            sum = sum + (ele / div);
+
+            // If there is a remainder,
+            // one extra value must be added.
+            //
+            // Example:
+            // ele = 9, div = 2
+            // 9 / 2 = 4
+            // remainder = 1
+            // Required value = 5
+            if (ele % div) {
+                sum++;
+            }
+        }
+
+        // Return true if the calculated sum
+        // is within the allowed threshold.
+        return sum <= th;
+    }
+
+    int smallestDivisor(vector<int>& arr, int th) {
+
+        // Total number of elements
+        int n = arr.size();
+
+        // If the threshold is smaller than the number of elements,
+        // it is impossible because every element contributes
+        // at least 1 to the sum.
+        if (n > th) {
+            return -1;
+        }
+
+        // Minimum possible divisor.
+        // Division by 0 is not allowed,
+        // so the smallest divisor is 1.
+        int start = 1;
+
+        // Maximum possible divisor.
+        // Choosing a divisor larger than the maximum element
+        // gives no extra benefit because every value becomes 1.
+        int end = *max_element(arr.begin(), arr.end());
+
+        // Stores the smallest valid divisor found so far.
+        int ans = 0;
+
+        // Binary Search on the answer (divisor)
+        while (start <= end) {
+
+            // Find the middle divisor safely
+            // to avoid integer overflow.
+            int mid = start + (end - start) / 2;
+
+            // Current divisor being tested
+            int div = mid;
+
+            // Check whether this divisor satisfies
+            // the threshold condition.
+            bool flag = f(arr, th, div);
+
+            // If the divisor works
+            if (flag) {
+
+                // Store it as a possible answer.
+                ans = div;
+
+                // Try to find an even smaller divisor.
+                end = mid - 1;
+            }
+            else {
+
+                // Current divisor is too small,
+                // so increase the divisor.
+                start = mid + 1;
+            }
+        }
+
+        // Return the smallest valid divisor.
+        return ans;
+
+        // Observation:
+        // Divisor increases  -> Calculated sum decreases.
+        // Divisor decreases  -> Calculated sum increases.
+        // This monotonic property allows Binary Search.
+    }
+};
